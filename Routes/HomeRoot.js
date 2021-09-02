@@ -4,12 +4,9 @@ import DetailsScreen from "../Screens/Details/DetailsScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { useTranslation } from "react-i18next";
-import { Appbar, Menu } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import SettingsScreen from "../Screens/SettingsScreen/SettingsScreen";
-import i18next from "i18next";
-import moment from "moment";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import MenuHeader from "../Components/MenuHeader/MenuHeader";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -17,54 +14,41 @@ const Tab = createMaterialBottomTabNavigator();
 function HomeRoutes() {
   return (
     <Stack.Navigator>
+        <Stack.Group
+            screenOptions={{
+                headerRight: () => (
+                <MenuHeader />
+                ),
+            }}
+        >
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Details" component={DetailsScreen} />
+        </Stack.Group>
     </Stack.Navigator>
   );
 }
 
 function SettingRoutes() {
-  const { t } = useTranslation();
-  const [visible, setVisible] = React.useState(false);
+    const { t } = useTranslation();
 
-  const openMenu = () => setVisible(true);
-
-  const closeMenu = () => setVisible(false);
-  return (
+    return (
     <Stack.Navigator>
+        <Stack.Group
+            screenOptions={{
+                headerRight: () => (
+                    <MenuHeader />
+                ),
+            }}
+        >
       <Stack.Screen
         options={{
           title: t("setting_tab_menu"),
-          headerRight: () => (
-            <Menu
-              visible={visible}
-              onDismiss={closeMenu}
-              anchor={<Appbar.Action onPress={openMenu} icon="dots-vertical" />}
-            >
-              <Menu.Item
-                onPress={async () => {
-                  moment.locale("ru");
-                  i18next.changeLanguage("ru");
-                  await AsyncStorage.setItem("lang", "ru");
-                  closeMenu();
-                }}
-                title="RU"
-              />
-              <Menu.Item
-                onPress={async () => {
-                  moment.locale("kk");
-                  i18next.changeLanguage("kk");
-                  await AsyncStorage.setItem("lang", "kk");
-                  closeMenu();
-                }}
-                title="KK"
-              />
-            </Menu>
-          ),
+
         }}
         name="Settings"
         component={SettingsScreen}
       />
+        </Stack.Group>
     </Stack.Navigator>
   );
 }
